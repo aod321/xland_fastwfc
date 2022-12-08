@@ -1,6 +1,0 @@
-/Users/yinzi/pybind11_fastwfc/build/temp.macosx-11.0-arm64-cpython-39/fastwfc/CMakeFiles/FASTWFC_LIB.dir
-/Users/yinzi/pybind11_fastwfc/build/temp.macosx-11.0-arm64-cpython-39/fastwfc/CMakeFiles/fastwfc.dir
-/Users/yinzi/pybind11_fastwfc/build/temp.macosx-11.0-arm64-cpython-39/fastwfc/CMakeFiles/edit_cache.dir
-/Users/yinzi/pybind11_fastwfc/build/temp.macosx-11.0-arm64-cpython-39/fastwfc/CMakeFiles/rebuild_cache.dir
-/Users/yinzi/pybind11_fastwfc/build/temp.macosx-11.0-arm64-cpython-39/fastwfc/pybind11/CMakeFiles/edit_cache.dir
-/Users/yinzi/pybind11_fastwfc/build/temp.macosx-11.0-arm64-cpython-39/fastwfc/pybind11/CMakeFiles/rebuild_cache.dir
