@@ -1,0 +1,13 @@
+# ninja log v5
+8	737	1669995862727290565	CMakeFiles/FASTWFC_LIB.dir/src/external/fast-wfc/src/lib/propagator.cpp.o	ba7710f98ce9f132
+9	726	1669995862715433299	CMakeFiles/fastwfc.dir/src/external/fast-wfc/src/lib/propagator.cpp.o	7e23b152e083e7b4
+10	740	1669995862730965153	CMakeFiles/fastwfc.dir/src/external/fast-wfc/src/lib/wave.cpp.o	2c1be6e635502542
+10	904	1669995862894687124	CMakeFiles/fastwfc.dir/src/external/fast-wfc/src/lib/wfc.cpp.o	94527cb60370616
+9	741	1669995862731310446	CMakeFiles/FASTWFC_LIB.dir/src/external/fast-wfc/src/lib/wave.cpp.o	9c3b4658392ed223
+24	44	1669996055507486000	libFASTWFC_LIB.a	230976614b5373d
+9	915	1669995862906282723	CMakeFiles/FASTWFC_LIB.dir/src/external/fast-wfc/src/lib/wfc.cpp.o	397e1f1f6a3661cd
+25	7724	1669996063177854722	CMakeFiles/fastwfc.dir/src/python/fastwfc_pybind.cpp.o	c7a6fabc977a58fe
+7724	7775	1669996063238013012	/Users/yinzi/pybind11_fastwfc/build/lib.macosx-11.0-arm64-cpython-39/fastwfc.cpython-39-darwin.so	832b9bbe77baa84a
+7	30	1670353407762308000	libFASTWFC_LIB.a	cd59ef3994641bb9
+8	8582	1670353416305919711	CMakeFiles/fastwfc.dir/src/python/fastwfc_pybind.cpp.o	c7a6fabc977a58fe
+8582	8657	1670353416389046079	/Users/yinzi/pybind11_fastwfc/build/lib.macosx-11.0-arm64-cpython-39/fastwfc.cpython-39-darwin.so	832b9bbe77baa84a
