@@ -43,6 +43,16 @@ class PyWave: public Wave
         }
         return wave_ids;
     }
+
+    void set_data(std::vector<unsigned> wave_ids){
+        for(int i = 0; i < size; i++){
+            for(int k = 0; k < nb_patterns; k++){
+                set(i, k, false);
+            }
+            set(i, wave_ids[i], true);
+        }
+    }
+
 };
 
 class PyXLandWFC: public XMLWFC::XLandWFC{
@@ -225,9 +235,10 @@ PYBIND11_MODULE(fastwfc, m) {
     .def(py::init<unsigned,unsigned,const std::vector<double>>())
     .def("get_data", &PyWave::get_data,  R"pbdoc(
         Get Wave Data
+    )pbdoc")
+    .def("set_data", &PyWave::set_data,  R"pbdoc(
+        Set Wave Data
     )pbdoc");
-
-
     py::class_<PyXLandWFC>(m, "XLandWFC")
     .def(py::init<const std::string&>())
     .def("generate", &PyXLandWFC::generate,

@@ -23,8 +23,8 @@ add_library(FASTWFC_LIB ${SOURCE_FILES} ${HEADER_FILES})
 set_target_properties(FASTWFC_LIB PROPERTIES LINKER_LANGUAGE CXX)
 
 
-#add_executable(${PROJECT_NAME} src/main.cpp)
-#target_link_libraries(${PROJECT_NAME} FASTWFC_LIB)
+# add_executable(${PROJECT_NAME} src/main.cpp)
+# target_link_libraries(${PROJECT_NAME} FASTWFC_LIB)
 
 add_subdirectory(pybind11)
 pybind11_add_module(fastwfc
