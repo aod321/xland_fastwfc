@@ -166,6 +166,8 @@ celerybeat.pid
 
 # SageMath parsed files
 *.sage.py
+libFASTWFC_LIB.a
+*.a
 
 # Environments
 .env
