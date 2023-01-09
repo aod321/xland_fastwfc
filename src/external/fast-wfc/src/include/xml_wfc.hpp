@@ -190,6 +190,8 @@ namespace XMLWFC
         string subset = rapidxml::get_attribute(node, "subset", "tiles");
         bool periodic_output =
                 (rapidxml::get_attribute(node, "periodic", "False") == "True");
+        bool exclude_border_ramp =
+                (rapidxml::get_attribute(node, "exclude_border_ramp", "True") == "True");
         unsigned width = stoi(rapidxml::get_attribute(node, "width", "48"));
         unsigned height = stoi(rapidxml::get_attribute(node, "height", "48"));
 
@@ -235,7 +237,7 @@ namespace XMLWFC
         }
 
         int seed = get_random_seed();
-        return make_tuple(tiles, neighbors_ids, width, height, periodic_output, seed);
+        return make_tuple(tiles, neighbors_ids, width, height, periodic_output, seed, exclude_border_ramp);
 //    TilingWFC<Color> wfc(tiles, neighbors_ids, height, width, {periodic_output},
 //                          seed);
 
@@ -259,7 +261,7 @@ namespace XMLWFC
         auto [tiles,
                 neighbors_ids,
                 width, height,
-                periodic_output, seed
+                periodic_output, seed, exclude_border_ramp
         ] = read_simpletiled_instance(root_node->first_node("sample"), dir_path);
         return tiles;
     }
@@ -285,10 +287,10 @@ namespace XMLWFC
         auto [tiles,
                 neighbors_ids,
                 width, height,
-                periodic_output, seed
+                periodic_output, seed, exclude_border_ramp
         ] = read_simpletiled_instance(root_node->first_node("simpletiled"), dir_path);
         TilingWFC<Color> wfc(tiles, neighbors_ids, height, width, {periodic_output},
-                             seed);
+                             seed, exclude_border_ramp);
         return wfc.get_wave();
     }
 
@@ -313,10 +315,10 @@ namespace XMLWFC
         auto [tiles,
                 neighbors_ids,
                 width, height,
-                periodic_output, seed
+                periodic_output, seed, exclude_border_ramp
         ] = read_simpletiled_instance(root_node->first_node("simpletiled"), dir_path);
         TilingWFC<Color> wfc(tiles, neighbors_ids, height, width, {periodic_output},
-                             seed);
+                             seed, exclude_border_ramp);
         auto wave = wfc.get_wave();
         // set all parterns in wave false
         for (unsigned i = 0; i < wave.size; i++) {
@@ -352,9 +354,9 @@ namespace XMLWFC
         auto [tiles,
                 neighbors_ids,
                 width, height,
-                periodic_output, seed
+                periodic_output, seed, exclude_border_ramp
         ] = read_simpletiled_instance(root_node->first_node("simpletiled"), dir_path);
-        return make_tuple(tiles, neighbors_ids, height,width, TilingWFCOptions{periodic_output}, seed);
+        return make_tuple(tiles, neighbors_ids, height,width, TilingWFCOptions{periodic_output}, seed, exclude_border_ramp);
     }
 
 
@@ -372,7 +374,8 @@ namespace XMLWFC
                     std::get<2>(XMLWFC::read_config(config_path)),
                     std::get<3>(XMLWFC::read_config(config_path)),
                     std::get<4>(XMLWFC::read_config(config_path)),
-                    std::get<5>(XMLWFC::read_config(config_path)))
+                    std::get<5>(XMLWFC::read_config(config_path)),
+                    std::get<6>(XMLWFC::read_config(config_path)))
         {
         };
         auto build_a_open_area_wave(){
@@ -389,14 +392,15 @@ namespace XMLWFC
             return out;
         }
 
-        static auto build_a_open_area_wave(const std::string _conifg_path){
-            auto temp_wfc = new TilingWFC<Color> (std::get<0>(XMLWFC::read_config(_conifg_path)),
-                                                  std::get<1>(XMLWFC::read_config(_conifg_path)),
-                                                  std::get<2>(XMLWFC::read_config(_conifg_path)),
-                                                  std::get<3>(XMLWFC::read_config(_conifg_path)),
-                                                  std::get<4>(XMLWFC::read_config(_conifg_path)),
-                                                  std::get<5>(XMLWFC::read_config(_conifg_path)));
-            auto base_wave = temp_wfc->get_wave();
+        static auto build_a_open_area_wave(const std::string _config_path){
+            auto temp_wfc = new TilingWFC<Color> (std::get<0>(XMLWFC::read_config(_config_path)),
+                                                  std::get<1>(XMLWFC::read_config(_config_path)),
+                                                  std::get<2>(XMLWFC::read_config(_config_path)),
+                                                  std::get<3>(XMLWFC::read_config(_config_path)),
+                                                  std::get<4>(XMLWFC::read_config(_config_path)),
+                                                  std::get<5>(XMLWFC::read_config(_config_path)),
+                                                  std::get<6>(XMLWFC::read_config(_config_path)));
+             auto base_wave = temp_wfc->get_wave();
             auto out = new Wave(base_wave.height, base_wave.width, base_wave.patterns_frequencies);
             for (int i = 0; i < base_wave.size; i++) {
                 for (int k = 0; k < base_wave.nb_patterns; k++) {
@@ -429,14 +433,15 @@ namespace XMLWFC
             return out;
         }
 
-        static auto build_wave_from_ids(vector<pair<unsigned, unsigned>> &tiles_id, const std::string _conifg_path){
+        static auto build_wave_from_ids(vector<pair<unsigned, unsigned>> &tiles_id, const std::string _config_path){
             // auto base_wave = wfc.get_wave();
-            auto temp_wfc = new TilingWFC<Color> (std::get<0>(XMLWFC::read_config(_conifg_path)),
-                                                  std::get<1>(XMLWFC::read_config(_conifg_path)),
-                                                  std::get<2>(XMLWFC::read_config(_conifg_path)),
-                                                  std::get<3>(XMLWFC::read_config(_conifg_path)),
-                                                  std::get<4>(XMLWFC::read_config(_conifg_path)),
-                                                  std::get<5>(XMLWFC::read_config(_conifg_path)));
+            auto temp_wfc = new TilingWFC<Color> (std::get<0>(XMLWFC::read_config(_config_path)),
+                                                  std::get<1>(XMLWFC::read_config(_config_path)),
+                                                  std::get<2>(XMLWFC::read_config(_config_path)),
+                                                  std::get<3>(XMLWFC::read_config(_config_path)),
+                                                  std::get<4>(XMLWFC::read_config(_config_path)),
+                                                  std::get<5>(XMLWFC::read_config(_config_path)),
+                                                  std::get<6>(XMLWFC::read_config(_config_path)));
             auto base_wave = temp_wfc->get_wave();
             auto out = new Wave(base_wave.height, base_wave.width, base_wave.patterns_frequencies);
             // set all parterns in wave false
@@ -469,7 +474,7 @@ namespace XMLWFC
             return result;
         }
 
-        static auto get_ids_from_wave(Wave &wave, const std::string _conifg_path){
+        static auto get_ids_from_wave(Wave &wave, const std::string _config_path){
             Array2D<unsigned> ids(wave.height, wave.width);
             for (int i = 0; i < wave.size; ++i) {
                 for(int k=0; k< wave.nb_patterns; k++){
@@ -478,12 +483,14 @@ namespace XMLWFC
                     }
                 }
             }
-            auto temp_wfc = new TilingWFC<Color> (std::get<0>(XMLWFC::read_config(_conifg_path)),
-                                                  std::get<1>(XMLWFC::read_config(_conifg_path)),
-                                                  std::get<2>(XMLWFC::read_config(_conifg_path)),
-                                                  std::get<3>(XMLWFC::read_config(_conifg_path)),
-                                                  std::get<4>(XMLWFC::read_config(_conifg_path)),
-                                                  std::get<5>(XMLWFC::read_config(_conifg_path)));
+            auto temp_wfc = new TilingWFC<Color> (std::get<0>(XMLWFC::read_config(_config_path)),
+                                                  std::get<1>(XMLWFC::read_config(_config_path)),
+                                                  std::get<2>(XMLWFC::read_config(_config_path)),
+                                                  std::get<3>(XMLWFC::read_config(_config_path)),
+                                                  std::get<4>(XMLWFC::read_config(_config_path)),
+                                                  std::get<5>(XMLWFC::read_config(_config_path)),
+                                                  std::get<6>(XMLWFC::read_config(_config_path)));
+
             auto result = temp_wfc->id_to_oriented_tiles(ids);
             delete temp_wfc;
             return result;
@@ -497,8 +504,9 @@ namespace XMLWFC
                                                      std::get<2>(XMLWFC::read_config(_config_path)),
                                                      std::get<3>(XMLWFC::read_config(_config_path)),
                                                      std::get<4>(XMLWFC::read_config(_config_path)),
-                                                     std::get<5>(XMLWFC::read_config(_config_path)));
-            _current_wfc->set_seed(seed);
+                                                     std::get<5>(XMLWFC::read_config(_config_path)),
+                                                     std::get<6>(XMLWFC::read_config(_config_path)));
+             _current_wfc->set_seed(seed);
             for (unsigned test = 0; test < 30; test++) {
                 auto success = _current_wfc->run();
                 if (success.has_value()) {
@@ -523,7 +531,8 @@ namespace XMLWFC
                                                             std::get<2>(XMLWFC::read_config(_config_path)),
                                                             std::get<3>(XMLWFC::read_config(_config_path)),
                                                             std::get<4>(XMLWFC::read_config(_config_path)),
-                                                            std::get<5>(XMLWFC::read_config(_config_path)));
+                                                            std::get<5>(XMLWFC::read_config(_config_path)),
+                                                            std::get<6>(XMLWFC::read_config(_config_path)));
                         _current_wfc->set_seed(seed);
                         test = 0;
                     }
@@ -553,7 +562,8 @@ namespace XMLWFC
                                                     std::get<2>(XMLWFC::read_config(config_path)),
                                                     std::get<3>(XMLWFC::read_config(config_path)),
                                                     std::get<4>(XMLWFC::read_config(config_path)),
-                                                    std::get<5>(XMLWFC::read_config(config_path)));
+                                                    std::get<5>(XMLWFC::read_config(config_path)),
+                                                    std::get<6>(XMLWFC::read_config(config_path)));
                 current_wfc->set_seed(random_seed);
                 for (unsigned test = 0; test < 30; test++) {
                     auto success = current_wfc->mutate(base_wave, new_weight);
@@ -581,7 +591,8 @@ namespace XMLWFC
                                                            std::get<2>(XMLWFC::read_config(config_path)),
                                                            std::get<3>(XMLWFC::read_config(config_path)),
                                                            std::get<4>(XMLWFC::read_config(config_path)),
-                                                           std::get<5>(XMLWFC::read_config(config_path)));
+                                                            std::get<5>(XMLWFC::read_config(config_path)),
+                                                            std::get<6>(XMLWFC::read_config(config_path)));
                         random_seed = get_random_seed();
                         current_wfc->set_seed(random_seed);
                         test = 0;
@@ -600,7 +611,8 @@ namespace XMLWFC
                                                           std::get<2>(XMLWFC::read_config(_config_path)),
                                                           std::get<3>(XMLWFC::read_config(_config_path)),
                                                           std::get<4>(XMLWFC::read_config(_config_path)),
-                                                          std::get<5>(XMLWFC::read_config(_config_path)));
+                                                            std::get<5>(XMLWFC::read_config(_config_path)),
+                                                            std::get<6>(XMLWFC::read_config(_config_path)));
                 _current_wfc->set_seed(seed);
                 for (unsigned test = 0; test < 30; test++) {
                     auto success = _current_wfc->mutate(base_wave, new_weight);
@@ -627,7 +639,8 @@ namespace XMLWFC
                                                              std::get<2>(XMLWFC::read_config(_config_path)),
                                                              std::get<3>(XMLWFC::read_config(_config_path)),
                                                              std::get<4>(XMLWFC::read_config(_config_path)),
-                                                             std::get<5>(XMLWFC::read_config(_config_path)));
+                                                            std::get<5>(XMLWFC::read_config(_config_path)),
+                                                            std::get<6>(XMLWFC::read_config(_config_path)));
                         _current_wfc->set_seed(seed);
                         test = 0;
                     }
@@ -643,7 +656,8 @@ namespace XMLWFC
                                                std::get<2>(XMLWFC::read_config(config_path)),
                                                std::get<3>(XMLWFC::read_config(config_path)),
                                                std::get<4>(XMLWFC::read_config(config_path)),
-                                               std::get<5>(XMLWFC::read_config(config_path)));
+                                                  std::get<5>(XMLWFC::read_config(config_path)),
+                                                  std::get<6>(XMLWFC::read_config(config_path)));
             auto random_seed = get_random_seed();
             current_wfc->set_seed(random_seed);
             for (unsigned test = 0; test < 30; test++) {
@@ -670,7 +684,8 @@ namespace XMLWFC
                                                            std::get<2>(XMLWFC::read_config(config_path)),
                                                            std::get<3>(XMLWFC::read_config(config_path)),
                                                            std::get<4>(XMLWFC::read_config(config_path)),
-                                                           std::get<5>(XMLWFC::read_config(config_path)));
+                                                            std::get<5>(XMLWFC::read_config(config_path)),
+                                                            std::get<6>(XMLWFC::read_config(config_path)));
                         random_seed = get_random_seed();
                         current_wfc->set_seed(random_seed);
                         test = 0;

@@ -41,6 +41,7 @@ private:
 
   std::set<unsigned > ramp_ids;
 std::vector<double> patterns_frequencies;
+  bool exclude_border_ramp = true;
 
 
     /**
@@ -66,7 +67,7 @@ public:
         Propagator::PropagatorState propagator,
         unsigned wave_height,
         unsigned wave_width, Propagator::NeghborWeights neghbor_weights,
-        const std::set<unsigned>& ramp_ids)
+        const std::set<unsigned>& ramp_ids, bool exclude_border_ramp)
     noexcept;
 
   Wave get_wave() const noexcept {
@@ -82,7 +83,7 @@ public:
   }
 
 
-  void remove_border_ramp();
+  // void remove_border_ramp();
   /**
    * Run the algorithm, and return a result if it succeeded.
    */

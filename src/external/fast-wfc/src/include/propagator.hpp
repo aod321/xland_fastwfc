@@ -155,7 +155,7 @@ void add_to_neb_propagator(unsigned y, unsigned x, unsigned pattern) noexcept {
    * Propagate the information given with add_to_propagator.
    */
   void propagate(Wave &wave) noexcept;
-  void neghbour_propagate(Wave &wave, std::set<unsigned> ramp_ids) noexcept;
+  void neghbour_propagate(Wave &wave, std::set<unsigned> ramp_ids, bool exclude_border_ramp) noexcept;
 };
 
 #endif // FAST_WFC_PROPAGATOR_HPP_

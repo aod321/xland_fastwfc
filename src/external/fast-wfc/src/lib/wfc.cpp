@@ -77,12 +77,13 @@ noexcept
 WFC::WFC(bool periodic_output, int seed, std::vector<double> patterns_frequencies,
          Propagator::PropagatorState propagator,
          unsigned wave_height,
-         unsigned wave_width, Propagator::NeghborWeights neghbor_weights, const std::set<unsigned>& ramp_ids)
+         unsigned wave_width, Propagator::NeghborWeights neghbor_weights, const std::set<unsigned>& ramp_ids, bool exclude_border_ramp)
 noexcept
         : gen(seed),
           wave(wave_height, wave_width, patterns_frequencies),
           nb_patterns(propagator.size()),
           ramp_ids(ramp_ids),
+          exclude_border_ramp(exclude_border_ramp),
           propagator(wave.height, wave.width, periodic_output, std::move(neghbor_weights), propagator,gen){
 }
 
@@ -101,7 +102,7 @@ std::optional<Array2D<unsigned>> WFC::run() noexcept {
 
     // Propagate the information.
     propagator.propagate(wave);
-    propagator.neghbour_propagate(wave, ramp_ids);
+    propagator.neghbour_propagate(wave, ramp_ids, exclude_border_ramp);
   }
 }
 
@@ -132,20 +133,31 @@ WFC::ObserveStatus WFC::observe() noexcept {
     std::uniform_real_distribution<> dis(0, s);
     double random_value = dis(gen);
     size_t chosen_value = nb_patterns - 1;
-    // Avoid of boundary ramps
-    // ---------
-    auto while_flag = false;
-    // if the cell is in the border list, then the chosen value must not be a ramp
-    if(exists<unsigned>(border_list, argmin)) while_flag = true;
-    do {
-        for (unsigned k = 0; k < nb_patterns; k++) {
-            random_value -= wave.get(argmin, k) ? normlized_cell_partterns_weights.get(argmin, k) : 0;
-            if (random_value <= 0) {
-                chosen_value = k;
-                break;
-            }
+    if(exclude_border_ramp){
+      // Avoid of boundary ramps
+      // ---------
+      auto while_flag = false;
+      // if the cell is in the border list, then the chosen value must not be a ramp
+      if(exists<unsigned>(border_list, argmin)) while_flag = true;
+      do {
+          for (unsigned k = 0; k < nb_patterns; k++) {
+              random_value -= wave.get(argmin, k) ? normlized_cell_partterns_weights.get(argmin, k) : 0;
+              if (random_value <= 0) {
+                  chosen_value = k;
+                  break;
+              }
+          }
+      }while(while_flag && exists<unsigned >(ramp_ids, chosen_value)); // until the chosen value is not a ramp
+    }
+    else{
+          for (unsigned k = 0; k < nb_patterns; k++) {
+          random_value -= wave.get(argmin, k) ? normlized_cell_partterns_weights.get(argmin, k) : 0;
+          if (random_value <= 0) {
+              chosen_value = k;
+              break;
+          }
         }
-    }while(while_flag && exists<unsigned >(ramp_ids, chosen_value)); // until the chosen value is not a ramp
+    }
     propagator.add_to_neb_propagator(argmin / wave.width, argmin % wave.width,chosen_value);
     // And define the cell with the pattern.
     for (unsigned k = 0; k < nb_patterns; k++) {

@@ -492,7 +492,7 @@ public:
             const std::vector<std::tuple<unsigned, unsigned, unsigned, unsigned, double>>
             &neighbors,
             const unsigned height, const unsigned width,
-            const TilingWFCOptions &options, int seed)
+            const TilingWFCOptions &options, int seed, bool exclude_border_ramp)
             : tiles(tiles),
               id_to_oriented_tile(std::get<0>(generate_oriented_tile_ids(tiles))),
               oriented_tile_ids(std::get<1>(generate_oriented_tile_ids(tiles))),
@@ -504,8 +504,8 @@ public:
                   height, width,
                   generate_propagator(neighbors, tiles, id_to_oriented_tile,
                                                                           oriented_tile_ids).second,
-                  ramp_ids
-                  ),
+                  ramp_ids,
+                  exclude_border_ramp),
               height(height), width(width) {}
 
 /**

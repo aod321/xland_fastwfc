@@ -91,7 +91,7 @@ void Propagator::propagate(Wave &wave) noexcept {
 }
 
 
-void Propagator::neghbour_propagate(Wave &wave, std::set<unsigned> ramp_ids) noexcept {
+void Propagator::neghbour_propagate(Wave &wave, std::set<unsigned> ramp_ids, bool exclude_border_ramp=true) noexcept {
     auto &cell_weights = wave.get_cell_partterns_weights();
     // We propagate every element while there is element to propagate.
     while (neb_propagating.size() != 0) {
@@ -123,10 +123,15 @@ void Propagator::neghbour_propagate(Wave &wave, std::set<unsigned> ramp_ids) noe
 
             // The index of the second cell, and the pattern neghbour weights
             unsigned i2 = x2 + y2 * wave.width;
-            // If the cell is at border, it shouldn't be a ramp
-            if(exists(border_list, i2)){
-                for(auto ramp_id : ramp_ids){
-                    cell_weights.get(i2, ramp_id) = 0.0;
+
+            if(exclude_border_ramp){
+                // Avoid of boundary ramps
+                // ---------
+                // If the cell is at border, it shouldn't be a ramp
+                if(exists(border_list, i2)){
+                    for(auto ramp_id : ramp_ids){
+                        cell_weights.get(i2, ramp_id) = 0.0;
+                    }
                 }
             }
 
