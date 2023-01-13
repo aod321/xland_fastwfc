@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.4...3.18)
 set(CMAKE_CXX_STANDARD 17)
-set(DEFAULT_BUILD_TYPE "Debug")
+set(DEFAULT_BUILD_TYPE "Release")
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Debug)
 endif()
@@ -23,19 +23,19 @@ add_library(FASTWFC_LIB ${SOURCE_FILES} ${HEADER_FILES})
 set_target_properties(FASTWFC_LIB PROPERTIES LINKER_LANGUAGE CXX)
 
 
- add_executable(${PROJECT_NAME} src/main.cpp)
- target_link_libraries(${PROJECT_NAME} FASTWFC_LIB)
-#
-#add_subdirectory(pybind11)
-#pybind11_add_module(fastwfc
-#	${SOURCE_FILES}
-#	${HEADER_FILES}
-#	${PYTHON_FILES}
-#)
-#
-#target_link_libraries(fastwfc PUBLIC ${FASTWFC_LIB})
-#
-## EXAMPLE_VERSION_INFO is defined by setup.py and passed into the C++ code as a
-## define (VERSION_INFO) here.
-#target_compile_definitions(fastwfc
-#                           PRIVATE VERSION_INFO=${EXAMPLE_VERSION_INFO})
+#  add_executable(${PROJECT_NAME} src/main.cpp)
+#  target_link_libraries(${PROJECT_NAME} FASTWFC_LIB)
+
+add_subdirectory(pybind11)
+pybind11_add_module(fastwfc
+	${SOURCE_FILES}
+	${HEADER_FILES}
+	${PYTHON_FILES}
+)
+
+target_link_libraries(fastwfc PUBLIC ${FASTWFC_LIB})
+
+# EXAMPLE_VERSION_INFO is defined by setup.py and passed into the C++ code as a
+# define (VERSION_INFO) here.
+target_compile_definitions(fastwfc
+                          PRIVATE VERSION_INFO=${EXAMPLE_VERSION_INFO})
