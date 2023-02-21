@@ -34,7 +34,9 @@ int get_random_seed() {
 #elif __APPLE__
         return random_device()();
 #elif _WIN32
-        return rand_s();
+        std::random_device rd;
+	std::mt19937 mt(rd());
+	return (unsigned int)mt();
 #else
         return rand();
 #endif
