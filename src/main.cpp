@@ -12,6 +12,7 @@ int main() {
     auto random_seed = XMLWFC::get_random_seed();
     XMLWFC::XLandWFC wfc("samples.xml");
     for(int i = 0; i < 10; i++) {
+//        auto [result, img] = wfc.run(true);
         auto [result, img] = wfc.run(true);
 //    auto [result, img] = XMLWFC::XLandWFC::run("samples.xml",random_seed,true);
         auto wave = wfc.build_wave_from_ids(result);

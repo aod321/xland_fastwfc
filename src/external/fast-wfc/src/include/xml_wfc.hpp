@@ -28,9 +28,13 @@ namespace XMLWFC
  * other targets. This is because, for instance, windows don't implement
  * random_device non-deterministically.
  */
-    int get_random_seed() {
+int get_random_seed() {
 #ifdef __linux__
         return random_device()();
+#elif __APPLE__
+        return random_device()();
+#elif _WIN32
+        return rand_s();
 #else
         return rand();
 #endif
