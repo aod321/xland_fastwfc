@@ -7,6 +7,28 @@ endif()
 
 project(fastwfc)
 
+set(SAMPLES_XML ${CMAKE_SOURCE_DIR}/samples.xml)
+set(SAMPLES_DIR ${CMAKE_SOURCE_DIR}/samples)
+
+if(NOT EXISTS ${SAMPLES_XML})
+  message(FATAL_ERROR "samples.xml not found at ${SAMPLES_XML}")
+endif()
+
+if(NOT EXISTS ${SAMPLES_DIR})
+  message(FATAL_ERROR "samples directory not found at ${SAMPLES_DIR}")
+endif()
+
+set(SAMPLES_OUTPUT_DIR ${CMAKE_BINARY_DIR})
+set(SAMPLES_OUTPUT ${SAMPLES_OUTPUT_DIR}/samples.xml)
+set(SAMPLES_OUTPUT_SAMPLES_DIR ${SAMPLES_OUTPUT_DIR}/samples)
+
+add_custom_target(copy_samples ALL
+  COMMAND ${CMAKE_COMMAND} -E copy_if_different ${SAMPLES_XML} ${SAMPLES_OUTPUT}
+  COMMAND ${CMAKE_COMMAND} -E copy_directory ${SAMPLES_DIR} ${SAMPLES_OUTPUT_SAMPLES_DIR}
+  BYPRODUCTS ${SAMPLES_OUTPUT}
+  COMMENT "Ensuring samples.xml and samples directory are available in the build tree"
+)
+
 include_directories("${CMAKE_SOURCE_DIR}/src")
 include_directories("${CMAKE_SOURCE_DIR}/src/external/fast-wfc/src/include")
 
@@ -21,6 +43,7 @@ source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SOURCE_FILES} ${HEADER_FIL
 
 add_library(FASTWFC_LIB ${SOURCE_FILES} ${HEADER_FILES})
 set_target_properties(FASTWFC_LIB PROPERTIES LINKER_LANGUAGE CXX)
+add_dependencies(FASTWFC_LIB copy_samples)
 
 #
 #  add_executable(${PROJECT_NAME} src/main.cpp.bak)
@@ -32,6 +55,7 @@ pybind11_add_module(fastwfc
 	${HEADER_FILES}
 	${PYTHON_FILES}
 )
+add_dependencies(fastwfc copy_samples)
 
 target_link_libraries(fastwfc PUBLIC ${FASTWFC_LIB})
 
