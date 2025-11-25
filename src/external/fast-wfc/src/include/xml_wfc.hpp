@@ -203,7 +203,7 @@ int get_random_seed() {
 
 //    cout << name << " " << subset << " started!" << endl;
 
-        ifstream config_file("samples/" + name + "/data.xml");
+        ifstream config_file(current_dir + "/" + name + "/data.xml");
         vector<char> buffer((istreambuf_iterator<char>(config_file)),
                             istreambuf_iterator<char>());
         buffer.push_back('\0');

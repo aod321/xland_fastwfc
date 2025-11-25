@@ -7,8 +7,8 @@ endif()
 
 project(fastwfc)
 
-set(SAMPLES_XML ${CMAKE_SOURCE_DIR}/samples.xml)
-set(SAMPLES_DIR ${CMAKE_SOURCE_DIR}/samples)
+set(SAMPLES_XML ${CMAKE_SOURCE_DIR}/fastwfc_resources/samples.xml)
+set(SAMPLES_DIR ${CMAKE_SOURCE_DIR}/fastwfc_resources/samples)
 
 if(NOT EXISTS ${SAMPLES_XML})
   message(FATAL_ERROR "samples.xml not found at ${SAMPLES_XML}")

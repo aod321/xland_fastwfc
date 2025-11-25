@@ -16,6 +16,18 @@ PLAT_TO_CMAKE = {
 }
 
 
+def _resource_files():
+    package_root = Path("fastwfc_resources")
+    data_files = ["samples.xml"]
+    samples_dir = package_root / "samples"
+    if samples_dir.exists():
+        for path in samples_dir.rglob("*"):
+            if path.is_file():
+                relative_path = path.relative_to(package_root)
+                data_files.append(str(relative_path))
+    return data_files
+
+
 # A CMakeExtension needs a sourcedir instead of a file list.
 # The name must be the _single_ output extension from the CMake build.
 # If you need multiple extensions, see scikit-build.
@@ -133,6 +145,10 @@ setup(
     author_email="myinzi123@gmail.com",
     description="A test wfc project using pybind11 and CMake",
     long_description="",
+    packages=["fastwfc_resources"],
+    package_dir={"fastwfc_resources": "fastwfc_resources"},
+    package_data={"fastwfc_resources": _resource_files()},
+    include_package_data=True,
     ext_modules=[CMakeExtension("fastwfc")],
     cmdclass={"build_ext": CMakeBuild},
     zip_safe=False,
