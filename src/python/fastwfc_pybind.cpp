@@ -21,6 +21,10 @@ int add(int i, int j) {
     return i + j;
 }
 
+int subtract(int i, int j) {
+    return i - j;
+}
+
 namespace py = pybind11;
 
 
@@ -219,6 +223,9 @@ PYBIND11_MODULE(fastwfc, m) {
         Add two numbers
 
         Some other explanation about the add function.
+    )pbdoc");
+    m.def("subtract", &subtract, R"pbdoc(
+        Subtract two numbers
     )pbdoc");
 
     py::class_<Color>(m, "Color")
